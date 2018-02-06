@@ -98,6 +98,7 @@ class Prophet(object):
             mcmc_samples=0,
             interval_width=0.80,
             uncertainty_samples=1000,
+            change_point_ratio=0.8,
     ):
         self.growth = growth
 
@@ -131,6 +132,7 @@ class Prophet(object):
         self.mcmc_samples = mcmc_samples
         self.interval_width = interval_width
         self.uncertainty_samples = uncertainty_samples
+        self.change_point_ratio = change_point_ratio
 
         # Set during fitting
         self.start = None
@@ -315,7 +317,7 @@ class Prophet(object):
                         'Changepoints must fall within training data.')
         else:
             # Place potential changepoints evenly through first 80% of history
-            hist_size = np.floor(self.history.shape[0] * 0.8)
+            hist_size = np.floor(self.history.shape[0] * self.change_point_ratio)
             if self.n_changepoints + 1 > hist_size:
                 self.n_changepoints = hist_size - 1
                 logger.info(
